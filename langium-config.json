@@ -1,0 +1,15 @@
+{
+    "projectName": "Automata",
+    "languages": [{
+        "id": "automata",
+        "grammar": "src/language/automata.langium",
+        "fileExtensions": [".auto"],
+        "textMate": {
+            "out": "syntaxes/automata.tmLanguage.json"
+        },
+        "monarch": {
+            "out": "syntaxes/automata.monarch.ts"
+        }
+    }],
+    "out": "src/language/generated"
+}
