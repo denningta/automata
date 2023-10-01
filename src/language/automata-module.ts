@@ -7,9 +7,9 @@ import { AutomataValidator, registerValidationChecks } from './automata-validato
  * Declaration of custom services - add your own service classes here.
  */
 export type AutomataAddedServices = {
-    validation: {
-        AutomataValidator: AutomataValidator
-    }
+  validation: {
+    AutomataValidator: AutomataValidator
+  }
 }
 
 /**
@@ -24,9 +24,9 @@ export type AutomataServices = LangiumServices & AutomataAddedServices
  * selected services, while the custom services must be fully specified.
  */
 export const AutomataModule: Module<AutomataServices, PartialLangiumServices & AutomataAddedServices> = {
-    validation: {
-        AutomataValidator: () => new AutomataValidator()
-    }
+  validation: {
+    AutomataValidator: () => new AutomataValidator()
+  }
 };
 
 /**
@@ -45,19 +45,20 @@ export const AutomataModule: Module<AutomataServices, PartialLangiumServices & A
  * @returns An object wrapping the shared services and the language-specific services
  */
 export function createAutomataServices(context: DefaultSharedModuleContext): {
-    shared: LangiumSharedServices,
-    Automata: AutomataServices
+  shared: LangiumSharedServices,
+  Automata: AutomataServices,
 } {
-    const shared = inject(
-        createDefaultSharedModule(context),
-        AutomataGeneratedSharedModule
-    );
-    const Automata = inject(
-        createDefaultModule({ shared }),
-        AutomataGeneratedModule,
-        AutomataModule
-    );
-    shared.ServiceRegistry.register(Automata);
-    registerValidationChecks(Automata);
-    return { shared, Automata };
+  const shared = inject(
+    createDefaultSharedModule(context),
+    AutomataGeneratedSharedModule
+  );
+  const Automata = inject(
+    createDefaultModule({ shared }),
+    AutomataGeneratedModule,
+    AutomataModule
+  );
+
+  shared.ServiceRegistry.register(Automata)
+  registerValidationChecks(Automata)
+  return { shared, Automata }
 }
