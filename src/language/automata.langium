@@ -1,7 +1,7 @@
 grammar Automata
 
 entry Model:
-  (persons+=Person | greetings+=Greeting | elements+=AbstractElement | entities+=Entity)*;
+  (persons+=Person | greetings+=Greeting | markdown+=MarkdownElement)*;
 
 Person:
   'person' name=ID;
@@ -9,34 +9,43 @@ Person:
 Greeting:
   'Hello' person=[Person:ID] '!';
 
-AbstractElement:
-  ModelDeclaration | Parameter;
+MarkdownElement:
+  Header | OrderedList | PlainText;
 
-ModelDeclaration:
-  'model' name=ID '{'
-    (elements+=AbstractElement)*
-  '}';
+PlainText:
+  text+=Text+;
 
-Parameter:
-  name=ID ':' type=TypeReference;
+Header:
+  Header1 | Header2 | Header3 | Header4;
 
-TypeReference:
-  reference=[ModelDeclaration:ID] 
-  | primitive=('string' | 'number' | 'boolean' | 'void');
+Header1:
+  '#' text+=Text+;
 
-Entity:
-  'define' type=TypeReference ':' name=ID '{'
-    properties+=Property*
-  '}';
+Header2:
+  '##' text+=Text+;
 
-Property:
-  name=ID ':' value=PropertyValue;
+Header3:
+  '###' text+=Text+;
 
-PropertyValue:
-  entity=[Entity:ID] | string=STRING | integer=INT;
+Header4:
+  '####' text+=Text+;
+
+OrderedList:
+  items+=OrderedListItem+;
+
+OrderedListItem:
+  number=INT '.' text+=Text+;
+
+Text returns string:
+  FeatureName
+;
+
+FeatureName returns string:
+  ID;
 
 
 hidden terminal WS: /\s+/;
+terminal EOL: /[\r\n]/;
 terminal ID: /[_a-zA-Z][\w_]*/;
 terminal INT returns number: /[0-9]+/;
 terminal STRING: /"(\\.|[^"\\])*"|'(\\.|[^'\\])*'/;
