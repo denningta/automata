@@ -1,7 +1,9 @@
 grammar Automata
 
 entry Model:
-  (persons+=Person | greetings+=Greeting | markdown+=MarkdownElement)*;
+  EOL*
+  (persons+=Person | greetings+=Greeting | markdown+=MarkdownElement)*
+  EOL*;
 
 Person:
   'person' name=ID;
@@ -10,45 +12,44 @@ Greeting:
   'Hello' person=[Person:ID] '!';
 
 MarkdownElement:
-  Header | OrderedList | PlainText;
+  Header | OrderedList | Paragraph;
 
-PlainText:
-  text+=Text+;
+Paragraph:
+  text+=Text+ EOL*;
 
 Header:
   Header1 | Header2 | Header3 | Header4;
 
 Header1:
-  '#' text+=Text+;
+  '#' text+=Text+ EOL*;
 
 Header2:
-  '##' text+=Text+;
+  '##' text+=Text+ EOL*;
 
 Header3:
-  '###' text+=Text+;
+  '###' text+=Text+ EOL*;
 
 Header4:
-  '####' text+=Text+;
+  '####' text+=Text+ EOL*;
 
 OrderedList:
-  items+=OrderedListItem+;
+  items+=OrderedListItem+ EOL*;
 
 OrderedListItem:
-  number=INT '.' text+=Text+;
+  number=INT '.' text+=Text+ EOL*;
 
 Text returns string:
-  FeatureName
-;
+  FeatureName;
 
 FeatureName returns string:
   ID;
 
 
-hidden terminal WS: /\s+/;
 terminal EOL: /[\r\n]/;
 terminal ID: /[_a-zA-Z][\w_]*/;
 terminal INT returns number: /[0-9]+/;
 terminal STRING: /"(\\.|[^"\\])*"|'(\\.|[^'\\])*'/;
 
+hidden terminal WS: /[^\S\r\n]/;
 hidden terminal ML_COMMENT: /\/\*[\s\S]*?\*\//;
 hidden terminal SL_COMMENT: /\/\/[^\n\r]*/;

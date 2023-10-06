@@ -1,4 +1,4 @@
-import { describe, test } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { createAutomataServices } from '../../src/language/automata-module.js';
 import { expectNoIssues, validationHelper } from 'langium/test'
 import { Model } from '../../src/language/generated/ast.js';
@@ -23,16 +23,17 @@ describe('Parser Tests', () => {
       expectNoIssues(validation)
     })
 
-
     test('multiple lines plain text', async () => {
       const validation = await validate(`
         this is thie first line of plain text
         this is the second line of plain text
       `)
 
+      const markdown = validation.document.parseResult.value.markdown
+
+      expect(markdown.length).toBe(2)
       expectNoIssues(validation)
 
-      debugger
     })
 
   })
@@ -40,11 +41,9 @@ describe('Parser Tests', () => {
   describe('Header successful', () => {
 
     test('single header', async () => {
-
       const validation = await validate(`
         # This is a header
       `)
-
 
       expectNoIssues(validation)
     })
