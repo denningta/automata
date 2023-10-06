@@ -2,14 +2,8 @@ grammar Automata
 
 entry Model:
   EOL*
-  (persons+=Person | greetings+=Greeting | markdown+=MarkdownElement)*
+  (markdown+=MarkdownElement)*
   EOL*;
-
-Person:
-  'person' name=ID;
-
-Greeting:
-  'Hello' person=[Person:ID] '!';
 
 MarkdownElement:
   Header | OrderedList | Paragraph;
