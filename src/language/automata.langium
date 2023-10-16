@@ -1,49 +1,144 @@
 grammar Automata
 
 entry Model:
-  EOL*
-  (markdown+=MarkdownElement)*
-  EOL*;
+  classes+=Class*
+  components+=Component*
+  renders+=Render*;
+
+Render:
+  'render' '('?
+    (
+      (componentRef=[Component:ID] | componentDef=Component) | 
+      '['
+        (componentRefs+=[Component:ID] | componentDef=Component)
+        (',' (componentRefs+=[Component:ID] | componentDef=Component))*
+      ']'
+    )
+  ')'?;
+
+Class:
+  'class' name=ID '{'
+    attributes+=Attributes+
+  '}';
+
+Component:
+  ComponentDef | MarkdownDef;
+
+ComponentDef:
+  'define' class=[Class:ID] ':' name=ID '{'
+    properties+=AbstractProperty*
+
+    render=Render?
+  '}';
+
+MarkdownDef:
+  'define' class='Markdown' (':' name=ID)? '{'
+    markdownElements+=MarkdownElement+
+  '}';
+
+Attributes:
+  name=ID (isOptional?='?')? ':' Type isArray?='[]'?;
+
+Type:
+  primitiveType=PrimitiveType | classRef=[Class:ID];
+
+PrimitiveType returns string:
+  'string' | 'number' | 'boolean';
+
 
 MarkdownElement:
-  Header | OrderedList | Paragraph;
+  BaseElement | Section | Subsection;
+
+SectionContent:
+  Subsection | BaseElement;
+
+Section:
+  '$section' name=ID? '{' text+=Text+ '}'
+    content+=SectionContent*
+  '!section';
+
+Subsection:
+  '$subsection' name=ID? '{' text+=Text+ '}'
+    content+=BaseElement*
+  '!subsection';
+
+
+BaseElement:
+  GenericElement | Paragraph | List | NumberedList | Image | Table | TableOfContents | Input;
+
+GenericElement:
+  '$' class=ID name=ID ('(' properties+=AbstractProperty+ ')')? '{'
+    markdown+=(MarkdownElement)*
+  '}';
+
+AbstractProperty:
+  name=ID ':' value=(STRING | ID | INT);
 
 Paragraph:
-  text+=Text+ EOL*;
+  text+=(InlineElement | Text)+ '$p'?;
 
-Header:
-  Header1 | Header2 | Header3 | Header4;
+NumberedList:
+  '$numberedList' items+=ListItem+ '$end';
 
-Header1:
-  '#' text+=Text+ EOL*;
+List:
+  '$list' items+=ListItem+ '$end';
 
-Header2:
-  '##' text+=Text+ EOL*;
+ListItem:
+  '$item' text+=Paragraph+;
 
-Header3:
-  '###' text+=Text+ EOL*;
+Image:
+  '$image' '(' url=STRING ')';
 
-Header4:
-  '####' text+=Text+ EOL*;
+Table:
+  '$Table' '{' colIds+=ID+ '}'
+    rows+=Row+
+  '!Table';
 
-OrderedList:
-  items+=OrderedListItem+ EOL*;
+Row:
+  cells+=Cell+ '\\'?;
 
-OrderedListItem:
-  number=INT '.' text+=Text+ EOL*;
+Cell:
+  content+=BaseElement+ '&'?;
+
+Input:
+  '$input' name=ID? ('{' properties+=AbstractProperty+ '}')?;
+
+TableOfContents returns string:
+  '$tableofcontents';
+
+InlineElement:
+  Italic | Bold | Underline | ComponentReference | Hyperlink;
+
+Italic:
+  '$italic' '{' text+=Text+ '}';
+
+Bold:
+  '$bold' '{' text+=Text+ '}';
+
+Underline:
+  '$underline' '{' text+=Text+ '}';
+
+Hyperlink:
+  '$href' '(' url=STRING ')' '{' text+=Text+ '}';
+
+ComponentReference:
+  '$ref' '(' element=[MarkdownElement:ID] ')';
 
 Text returns string:
-  FeatureName;
+  FeatureName | Punctuation | ESCAPEDCHAR;
+
+Punctuation returns string:
+  '.' | '!' | '?' | '(' | ')' | ',';
 
 FeatureName returns string:
-  ID;
+  ID | 'section';
 
 
-terminal EOL: /[\r\n]/;
+hidden terminal WS: /\s+/;
+terminal ESCAPEDCHAR returns string: /\\./;
 terminal ID: /[_a-zA-Z][\w_]*/;
 terminal INT returns number: /[0-9]+/;
 terminal STRING: /"(\\.|[^"\\])*"|'(\\.|[^'\\])*'/;
 
-hidden terminal WS: /[^\S\r\n]/;
 hidden terminal ML_COMMENT: /\/\*[\s\S]*?\*\//;
 hidden terminal SL_COMMENT: /\/\/[^\n\r]*/;
