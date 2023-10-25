@@ -1,7 +1,7 @@
 import { parseHelper, validationHelper } from "langium/test"
-import { createAutomataServices } from "../../../../src/language/automata-module.js"
 import { EmptyFileSystem } from "langium"
-import { Model } from "../../../../src/language/generated/ast.js"
+import { createAutomataServices } from "../../../src/language/automata-module.js"
+import { Model } from "../../../src/language/generated/ast.js"
 
 export const services = createAutomataServices(EmptyFileSystem)
 export const parse = parseHelper(services.Automata)

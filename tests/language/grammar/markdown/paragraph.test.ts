@@ -1,6 +1,6 @@
 import { expectNoIssues } from "langium/test"
 import { describe, expect, test } from 'vitest'
-import { validateMarkdown } from "./testHelpers.js"
+import { validateMarkdown } from "../testHelpers.js"
 import { MarkdownDef } from "../../../../src/language/generated/ast.js"
 
 describe('Paragraph', () => {

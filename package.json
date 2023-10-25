@@ -22,7 +22,11 @@
     "build:monarch": "tsc -b tsconfig.monarch.json",
     "test": "vitest --config ./tests/vitest.config.ts",
     "test:debug": "vitest --config ./tests/vitest.config.ts --inspect-brk --single-thread --isolate false",
-    "serve": "node ./out/web/app.js"
+    "serve": "node ./out/web/app.js",
+    "automata": "$npm_package_bin_automata"
+  },
+  "bin": {
+    "automata": "./bin/cli.js"
   },
   "dependencies": {
     "chalk": "~5.3.0",
@@ -81,8 +85,5 @@
   "activationEvents": [
     "onLanguage:automata"
   ],
-  "main": "./out/extension/main.cjs",
-  "bin": {
-    "automata-cli": "./bin/cli.js"
-  }
+  "main": "./out/extension/main.cjs"
 }

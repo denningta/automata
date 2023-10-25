@@ -1,6 +1,6 @@
 import { describe, test } from 'vitest'
 import { expectNoIssues } from 'langium/test'
-import { validateMarkdown } from './testHelpers.js'
+import { validateMarkdown } from '../testHelpers.js'
 
 describe('Section', () => {
   test('single section', async () => {

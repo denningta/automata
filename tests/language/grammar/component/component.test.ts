@@ -1,6 +1,6 @@
 import { expectNoIssues } from "langium/test"
 import { describe, test } from "vitest"
-import { validate } from "../markdown/testHelpers.js"
+import { validate } from "../testHelpers.js"
 
 describe('Component', () => {
 

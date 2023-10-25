@@ -1,5 +1,5 @@
 import { describe, test } from "vitest";
-import { validateMarkdown } from "./testHelpers.js";
+import { validateMarkdown } from "../testHelpers.js";
 import { expectNoIssues } from "langium/test";
 
 describe('Reference', () => {
